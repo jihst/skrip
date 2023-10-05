@@ -1,30 +1,24 @@
 <?php
-include "koneksi.php";
-//function anti_injeksi($data){
-	// $filter = mysql_real_escape_string(stripslashes(strip_tags(htmlspecialchars($data,ENT_QUOTES))));
-  //return $filter;
-//}
+        include "koneksi.php";
+        $username = $_POST['username'];
+        $password = $_POST['password'];
+        if (empty($username)) {
+            echo "<script>alert('Username belum diisi')</script>";
+            echo "<meta http-equiv='refresh' content='1 url=login.php'>";
+        } else if (empty($password)) {
+            echo "<script>alert('Password belum diisi')</script>";
+            echo "<meta http-equiv='refresh' content='1 url=login.php'>";
+        } else {
+            session_start();
+            $login = "select * from admin where Username='$username' and Password='$password'";
+            $result = mysqli_query($connection, $login);
 
-	$username = $_POST['username'];
-	$password =($_POST['password']);
-
-//password dan username harus berupa huruf atau angka
-//if(!ctype_alnum($username) OR !ctype_alnum($password)){
-//	echo "duh jangan usil deh ";
-//}	
-    $a = mysqli_query($connection,"select * from admin where username='$username' and password='$password'");
-	$ketemu = mysqli_num_rows($a);
-	$r = mysqli_fetch_array($a);
-	
-	
-	if($ketemu > 0){
-		session_start();
-		$_SESSION[username] = $r[username];
-		$_SESSION[password] = $r[password];
-		
-		header("location:home.php");			
-		
-	}else {
-		header('location:index.php?w=gagal');
-	}
-?>
+            if (mysqli_num_rows($result) > 0) {
+                $_SESSION['Username'] = $username;
+                header("location:home.php");
+            } else {
+                echo "<script>alert('Username atau Password salah')</script>";
+                echo "<meta http-equiv='refresh' content='1 url=login.php'>";
+            }
+        }
+        ?>
